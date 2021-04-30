@@ -1191,21 +1191,44 @@ ADN
     
       - 支持？*两种通配符
       - Avoid beginning patterns with `*` or `?`
-  - boost:用于增加或减少相关性分数
-      - case_insensitive [7.10.0]:true->允许进行不区分大小写的匹配，默认值为false
-    ```
-      {
-        "query": {
-          "wildcard": {
-            "user.id": {
-              "value": "ki*y",
-              "boost": 1.0,
-              "rewrite": "constant_score"
+      
+      ```json
+       {
+          "query": {
+            "wildcard": {
+              "user.id": {
+                "value": "ki*y",
+                "boost": 1.0,
+                "rewrite": "constant_score"
+              }
             }
           }
         }
-      }
       ```
+      
+  - boost:用于增加或减少相关性分数
+      - case_insensitive [7.10.0]:true->允许进行不区分大小写的匹配，默认值为false
+    
+    ```json
+    POST news/_search
+    {
+        "query":{
+            "boosting":{
+                "positive":{//正相关
+                    "match":{
+                        "content":"apple"
+                    }
+                },
+                "negative":{//负相关
+                    "match":{
+                        "content":"pie"
+                    }
+                }
+            },
+            "negative_boost":0.5
+        }
+    }
+    ```
 
 ##### Constant Score 转为Filter
 
